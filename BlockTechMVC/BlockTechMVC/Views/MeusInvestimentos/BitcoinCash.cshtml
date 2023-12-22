@@ -1,0 +1,295 @@
+﻿
+@{
+    ViewData["Title"] = "Bitcoin Cash";
+
+    var bitcoinCashQuantidade = ViewBag.QuantidadaTotalBitcoinCash;
+    var bitcoinCashValorReal = ViewBag.QuantidadaEmRealBitcoinCash;
+    var bitcoinCashInvestimento = Convert.ToDouble(ViewBag.ValorInvestidoBitcoinCash);
+    var lucroOuPerda = Convert.ToDouble(ViewBag.LucroOuPerda);
+
+    var diasList = ViewBag.Ultimos7Dias;
+    var dias = Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(diasList));
+    var valores7Dias = ViewBag.ValorBitcoinCash7Dias;
+    var valores = Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(valores7Dias));
+
+    var dias30List = ViewBag.UltimoMes;
+    var dias30 = Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(dias30List));
+    var valores30Dias = ViewBag.ValorMes;
+    var valores30 = Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(valores30Dias));
+
+    var bitcoinInvestimento = Convert.ToDouble(ViewBag.ValorInvestidoBitcoin);
+    var ethereumInvestimento = Convert.ToDouble(ViewBag.ValorInvestidoEthereum);
+    var xrpInvestimento = Convert.ToDouble(ViewBag.ValorInvestidoXrp);
+    var paxGoldInvestimento = Convert.ToDouble(ViewBag.ValorInvestidoPaxGold);
+    var litecoinInvestimento = Convert.ToDouble(ViewBag.ValorInvestidoLitecoin);
+
+    var bitcoinCashTotal = ViewBag.Ultimos7DiasAdm;
+    var bitcoinCashTotalAdm = Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(bitcoinCashTotal));
+    var admBitcoinCashTotal = ViewBag.BitcoinCash;
+    var BitcoinCashValorRS = ViewBag.BitcoinCashValorRS;
+    var BitcoinCashInvestido = ViewBag.BitcoinCashInvestido;
+
+    var TotalAdmMes = ViewBag.ValorMesAdm;
+    var TotalAdm30 = Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(TotalAdmMes));
+    var dias30ListAdm = ViewBag.UltimoMesAdm;
+    var diasAdm30 = Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(dias30ListAdm));
+
+    var lucroOuPerdaAdm = Convert.ToDouble(ViewBag.LucroOuPerdaAdm);
+
+}
+
+@if (!User.IsInRole("Admin"))
+{
+    <div class="flex-row">
+
+        <a asp-action="Index" class="btn btn-outline-dark">Investimentos</a>
+        @if (bitcoinInvestimento > 0)
+        {
+            <a asp-action="Bitcoin" class="btn btn-outline-dark">Bitcoin</a>
+        }
+        @if (ethereumInvestimento > 0)
+        {
+            <a asp-action="Ethereum" class="btn btn-outline-dark">Ethereum</a>
+        }
+        @if (bitcoinCashInvestimento > 0)
+        {
+            <a asp-action="BitcoinCash" class="btn btn-outline-dark">Bitcoin Cash</a>
+        }
+        @if (xrpInvestimento > 0)
+        {
+            <a asp-action="Xrp" class="btn btn-outline-dark">XRP</a>
+        }
+        @if (paxGoldInvestimento > 0)
+        {
+            <a asp-action="PaxGold" class="btn btn-outline-dark">PAX Gold</a>
+        }
+        @if (litecoinInvestimento > 0)
+        {
+            <a asp-action="Litecoin" class="btn btn-outline-dark">Litecoin</a>
+        }
+    </div>
+    <br />
+    <h1 class="text-center">@ViewData["Title"]</h1>
+    <br>
+    <hr />
+
+    <h5>Quantidade: @bitcoinCashQuantidade</h5>
+    <h5>Valor Investido: R$ @bitcoinCashInvestimento</h5>
+    <h5>Valor Atual: R$ @bitcoinCashValorReal</h5>
+
+    @if (lucroOuPerda > 0)
+    {
+        <h5>Lucro: R$ @lucroOuPerda</h5>
+    }
+    else
+    {
+        if (lucroOuPerda < 0)
+        {
+            lucroOuPerda = lucroOuPerda * (-1);
+        }
+        <h5>Perda: R$ @lucroOuPerda</h5>
+    }
+
+    <div id="botaoMes">
+        <button type="button" class="btn btn-light" onclick="TrocarGrafico()">Mensal</button>
+    </div>
+    <div id="botaoSemana">
+        <button type="button" class="btn btn-light" onclick="TrocarGraficoSemana()">Semanal</button>
+    </div>
+
+    <br />
+
+    <div id="graficoSemana">
+        <canvas id="graficoBitcoinCash" width="400" height="150" aria-label="Gráfico com os valores do investimento no Bitcoin Cah nos últimos 7 dias" role="img">
+        </canvas>
+    </div>
+    <div id="graficoMes">
+        <canvas id="graficoBitcoinCash30" width="400" height="150" aria-label="Gráfico com os valores do investimento no Bitcoin Cash nos últimos 7 dias" role="img">
+        </canvas>
+    </div>
+
+    @section Scripts {
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+        <script>
+        $(document)
+            .ready(function () {
+
+                var ctx = document.getElementById('graficoBitcoinCash').getContext('2d');
+                var myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: @dias,
+                        datasets: [{
+                            data: @valores,
+                            backgroundColor: 'rgba(141, 195, 81, 0.0)',
+                            borderColor:  'rgba(141, 195, 81, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        legend: {
+                            display: false
+                        },
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: false
+                                }
+                            }]
+                        }
+                    }
+                });
+
+            });
+
+              $(document)
+            .ready(function () {
+
+                var ctx = document.getElementById('graficoBitcoinCash30').getContext('2d');
+                var myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: @dias30,
+                        datasets: [{
+                            data: @valores30,
+                            backgroundColor: 'rgba(141, 195, 81, 0.0)',
+                            borderColor:  'rgba(141, 195, 81, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        legend: {
+                            display: false
+                        },
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: false
+                                }
+                            }]
+                        }
+                    }
+                });
+
+            });
+        </script>
+    }
+}
+else
+{
+    <div class="flex-row">
+        <a asp-action="Index" class="btn btn-outline-dark">Investimentos</a>
+        <a asp-action="Bitcoin" class="btn btn-outline-dark">Bitcoin</a>
+        <a asp-action="Ethereum" class="btn btn-outline-dark">Ethereum</a>
+        <a asp-action="BitcoinCash" class="btn btn-outline-dark">Bitcoin Cash</a>
+        <a asp-action="Xrp" class="btn btn-outline-dark">XRP</a>
+        <a asp-action="PaxGold" class="btn btn-outline-dark">PAX Gold</a>
+        <a asp-action="Litecoin" class="btn btn-outline-dark">Litecoin</a>
+    </div>
+    <br />
+    <h1 class="text-center">@ViewData["Title"]</h1>
+    <br />
+    <h5>Quantidade: @admBitcoinCashTotal</h5>
+    <h5>Valor Investido: R$ @BitcoinCashInvestido</h5>
+    <h5>Valor Atual: R$ @BitcoinCashValorRS</h5>
+    @if (lucroOuPerdaAdm > 0)
+    {
+        <h5>Lucro: R$ @lucroOuPerdaAdm</h5>
+    }
+    else
+    {
+        if (lucroOuPerdaAdm < 0)
+        {
+            lucroOuPerdaAdm = lucroOuPerdaAdm * (-1);
+        }
+        <h5>Perda: R$ @lucroOuPerdaAdm</h5>
+    }
+
+    <div id="botaoMes">
+        <button type="button" class="btn btn-light" onclick="TrocarGrafico()">Mensal</button>
+    </div>
+    <div id="botaoSemana">
+        <button type="button" class="btn btn-light" onclick="TrocarGraficoSemana()">Semanal</button>
+    </div>
+
+    <br />
+
+    <div id="graficoSemana">
+        <canvas id="graficoBitcoinCash" width="400" height="150" aria-label="Gráfico com os valores do investimento no Bitcoin Cash nos últimos 7 dias" role="img">
+        </canvas>
+    </div>
+    <div id="graficoMes">
+        <canvas id="graficoBitcoinCash30" width="400" height="150" aria-label="Gráfico com os valores do investimento no Bitcoin Cash nos últimos 7 dias" role="img">
+        </canvas>
+    </div>
+    <br />
+
+    @section Scripts {
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+        <script>
+        $(document)
+            .ready(function () {
+
+                var ctx = document.getElementById('graficoBitcoinCash').getContext('2d');
+                var myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: @dias,
+                        datasets: [{
+                            data: @bitcoinCashTotalAdm,
+                            backgroundColor: 'rgba(141, 195, 81, 0.0)',
+                            borderColor: 'rgba(141, 195, 81, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        legend: {
+                            display: false
+                        },
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: false
+                                }
+                            }]
+                        }
+                    }
+                });
+
+            });
+
+             $(document)
+            .ready(function () {
+
+                var ctx = document.getElementById('graficoBitcoinCash30').getContext('2d');
+                var myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: @diasAdm30,
+                        datasets: [{
+                            data: @TotalAdm30,
+                            backgroundColor: 'rgba(141, 195, 81, 0.0)',
+                            borderColor: 'rgba(141, 195, 81, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        legend: {
+                            display: false
+                        },
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: false
+                                }
+                            }]
+                        }
+                    }
+                });
+
+            });
+        </script>
+    }
+}

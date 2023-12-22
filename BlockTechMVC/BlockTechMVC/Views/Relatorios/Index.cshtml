@@ -1,0 +1,81 @@
+﻿
+@{
+    ViewData["Title"] = "Relatórios";
+    ViewData["Data"] = DateTime.Now.ToString("dd-MM-yyyy HH:mm");
+
+    var bitcoin = ViewBag.Bitcoin;
+    var ethereum = ViewBag.Ethereum;
+    var bitcoinCash = ViewBag.BitcoinCash;
+    var xrp = ViewBag.XRP;
+    var paxGold = ViewBag.PaxGold;
+    var litecoin = ViewBag.Litecoin;
+}
+<br />
+<div class="flex-row">
+
+    <a asp-action="Index" class="btn btn-dark text-white">Hoje</a>
+    <a asp-action="Semanal" class="btn btn-outline-dark">Últimos 7 dias</a>
+    <a asp-action="Mensal" class="btn btn-outline-dark">Últimos 30 dias</a>
+
+</div>
+<br />
+<h4 class="text-center">Valor Por Criptomoeda @ViewData["Data"]</h4>
+<br />
+
+<canvas id="graficoCriptomoedas" width="400" height="150"  aria-label="Gráfico com os valores de todas criptomoedas hoje" role="img"></canvas>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+    <script>
+                $(document)
+                    .ready(function () {
+
+                        var ctx = document.getElementById('graficoCriptomoedas').getContext('2d');
+                        var myChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: ['Bitcoin', 'Ethereum', 'Bitcoin Cash', 'XRP', 'PAX Gold', 'Litecoin'],
+                                datasets: [{
+                                    data: [@bitcoin, @ethereum, @bitcoinCash, @xrp, @paxGold, @litecoin],
+                                    backgroundColor: [
+                                        'rgba(250, 150, 26, 0.2)',
+                                        'rgba(107, 108, 109, 0.2)',
+                                        'rgba(141, 195, 81, 0.2)',
+                                        'rgba(35, 41, 47, 0.2)',
+                                        'rgba(250, 244, 15, 0.2)',
+                                        'rgba(52, 92, 157, 0.2)'
+                                    ],
+                                    borderColor: [
+                                        'rgba(250, 150, 26, 1)',
+                                        'rgba(107, 108, 109, 1)',
+                                        'rgba(141, 195, 81, 1)',
+                                        'rgba(35, 41, 47, 1)',
+                                        'rgba(250, 244, 15, 1)',
+                                        'rgba(52, 92, 157, 1)'
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                legend: {
+                                    display: false
+                                },
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            beginAtZero: false
+                                        }
+                                    }]
+                                }
+                            }
+                        });
+
+                    });
+    </script>
+
+}
+
+
+
+

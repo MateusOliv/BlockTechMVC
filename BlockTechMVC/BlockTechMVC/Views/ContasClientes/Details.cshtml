@@ -1,0 +1,78 @@
+﻿@model BlockTechMVC.Models.Transacao
+
+@{
+    ViewData["Title"] = "Detalhes";
+    var total = ViewBag.Total;
+    var totalAdm = ViewBag.TotalAdm;
+}
+<br />
+<h1>@ViewData["Title"]</h1>
+<br />
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ContaCliente.DataAbertura)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ContaCliente.DataAbertura)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ContaCliente.ApplicationUser.Nome)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ContaCliente.ApplicationUser.Nome)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ContaCliente.NumeroConta)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ContaCliente.NumeroConta)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Saldo.SaldoAtualRS)
+        </dt>
+        @if (User.IsInRole("Admin"))
+        {
+    <dd class="col-sm-10">
+        R$ @totalAdm
+    </dd>
+        }
+        else
+        {
+            <dd class="col-sm-10">
+                R$ @total
+            </dd>
+        }
+        <div style="white-space:pre-line; font-weight: bold; font-size:larger" class="col-sm-12">
+            @ViewBag.ContaVinculada
+        </div>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ContaCliente.Conta.Banco)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ContaCliente.Conta.Banco)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ContaCliente.Conta.Agencia)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ContaCliente.Conta.Agencia)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ContaCliente.Conta.TipoConta)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ContaCliente.Conta.TipoConta)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ContaCliente.Conta.NumeroConta)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ContaCliente.Conta.NumeroConta)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Index">Voltar</a>
+</div>

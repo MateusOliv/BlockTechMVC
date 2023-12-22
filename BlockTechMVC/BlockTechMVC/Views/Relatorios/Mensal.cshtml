@@ -1,0 +1,154 @@
+﻿
+@{
+    ViewData["Title"] = "Relatórios";
+
+    var diasList = ViewBag.Dias;
+    var bitcoinList = ViewBag.Bitcoin;
+    var ethereumList = ViewBag.Ethereum;
+    var bitcoinCashList = ViewBag.BitcoinCash;
+    var xrpList = ViewBag.XRP;
+    var paxGoldList = ViewBag.PaxGold;
+    var litecoinList = ViewBag.Litecoin;
+
+    var dias = Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(diasList));
+    var bitcoin = Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(bitcoinList));
+    var ethereum = Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ethereumList));
+    var bitcoinCash = Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(bitcoinCashList));
+    var xrp = Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(xrpList));
+    var paxGold = Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(paxGoldList));
+    var litecoin = Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(litecoinList));
+}
+
+<br />
+
+<div>
+    <a asp-action="Index" class="btn btn-outline-dark">Hoje</a>
+    <a asp-action="Semanal" class="btn btn-outline-dark">Últimos 7 dias</a>
+    <a asp-action="Mensal" class="btn btn-dark text-white">Todas as Criptomoedas</a>
+    <a asp-action="Bitcoin30" class="btn btn-outline-dark menu">Bitcoin</a>
+    <a asp-action="Ethereum30" class="btn btn-outline-dark menu">Ethereum</a>
+    <a asp-action="BitcoinCash30" class="btn btn-outline-dark menu">Bitcoin Cash</a>
+    <a asp-action="Xrp30" class="btn btn-outline-dark menu">XRP</a>
+    <a asp-action="PaxGold30" class="btn btn-outline-dark menu">PAX Gold</a>
+    <a asp-action="Litecoin30" class="btn btn-outline-dark menu">Litecoin</a>
+</div>
+
+<br />
+<h4 class="text-center">Últimos 30 Dias - Taxa de Crescimento</h4>
+<br />
+<div class="container align-items-center">
+    <div class="row">
+        <div class="col-md-2 col-6 legendas">
+            <div id="bitcoinLegenda"></div>
+            <div class="textoLegenda">
+                Bitcoin
+            </div>
+        </div>
+        <div class="col-md-2 col-6 legendas">
+            <div id="ethereumLegenda"></div>
+            <div class="textoLegenda">
+                Ethereum
+            </div>
+        </div>
+        <div class="col-md-2 col-6 legendas">
+            <div id="bitcoinCashLegenda"></div>
+            <div class="textoLegenda">
+                Bitcoin Cash
+            </div>
+        </div>
+        <div class="col-md-2 col-6 legendas">
+            <div id="xrpLegenda"></div>
+            <div class="textoLegenda">
+                XRP
+            </div>
+        </div>
+        <div class="col-md-2 col-6 legendas">
+            <div id="paxGoldLegenda"></div>
+            <div class="textoLegenda">
+                PAX Gold
+            </div>
+        </div>
+        <div class="col-md-2 col-6 legendas">
+            <div id="litecoinLegenda"></div>
+            <div class="textoLegenda">
+                Litecoin
+            </div>
+        </div>
+    </div>
+    <br />
+</div>
+<canvas id="graficoCriptomoedas" width="400" height="150" style="min-height: 30vh;"  aria-label="Gráfico com os valores de todas criptomoedas nos últimos 30 dias" role="img"></canvas>
+
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script>
+                $(document)
+                    .ready(function () {
+
+                        var ctx = document.getElementById('graficoCriptomoedas').getContext('2d');
+                        var myChart = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: @dias,
+                                datasets: [{
+                                    label: 'Bitcoin',
+                                    data: @bitcoin,
+                                    backgroundColor: 'rgba(250, 150, 26, 0)',
+                                    borderColor: 'rgba(250, 150, 26, 1)',
+                                    borderWidth: 1
+                                },
+                                {
+                                    label: 'Ethereum',
+                                    data: @ethereum,
+                                    backgroundColor: 'rgba(107, 108, 109, 0)',
+                                    borderColor: 'rgba(107, 108, 109, 1)',
+                                    borderWidth: 1
+                                },
+                                {
+                                    label: 'Bitcoin Cash',
+                                    data: @bitcoinCash,
+                                    backgroundColor: 'rgba(141, 195, 81, 0)',
+                                    borderColor: 'rgba(141, 195, 81, 1)',
+                                    borderWidth: 1
+                                },
+                                {
+                                    label: 'XRP',
+                                    data: @xrp,
+                                    backgroundColor: 'rgba(35, 41, 47, 0)',
+                                    borderColor: 'rgba(35, 41, 47, 1)',
+                                    borderWidth: 1
+                                },
+                                {
+                                    label: 'PAX Gold',
+                                    data: @paxGold,
+                                    backgroundColor: 'rgba(250, 244, 15, 0)',
+                                    borderColor: 'rgba(250, 244, 15, 1)',
+                                    borderWidth: 1
+                                    },
+                                    {
+                                     label: 'Litecoin',
+                                    data: @litecoin,
+                                    backgroundColor: 'rgba(52, 92, 157, 0)',
+                                    borderColor: 'rgba(52, 92, 157, 1)',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                legend: {
+                                    display: false
+                                },
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            beginAtZero: false
+                                        }
+                                    }]
+                                }
+                            }
+                        });
+
+                    });
+    </script>
+
+}

@@ -1,0 +1,297 @@
+﻿
+@{
+    ViewData["Title"] = "XRP";
+
+    var xrpQuantidade = ViewBag.QuantidadaTotalXrp;
+    var xrpValorReal = ViewBag.QuantidadaEmRealXrp;
+    var xrpInvestimento = Convert.ToDouble(ViewBag.ValorInvestidoXrp);
+    var lucroOuPerda = Convert.ToDouble(ViewBag.LucroOuPerda);
+
+    var diasList = ViewBag.Ultimos7Dias;
+    var dias = Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(diasList));
+    var valores7Dias = ViewBag.ValorXrp7Dias;
+    var valores = Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(valores7Dias));
+
+    var dias30List = ViewBag.UltimoMes;
+    var dias30 = Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(dias30List));
+    var valores30Dias = ViewBag.ValorMes;
+    var valores30 = Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(valores30Dias));
+
+    var bitcoinInvestimento = Convert.ToDouble(ViewBag.ValorInvestidoBitcoin);
+    var ethereumInvestimento = Convert.ToDouble(ViewBag.ValorInvestidoEthereum);
+    var paxGoldInvestimento = Convert.ToDouble(ViewBag.ValorInvestidoPaxGold);
+    var bitcoinCashInvestimento = Convert.ToDouble(ViewBag.ValorInvestidoBitcoinCash);
+    var litecoinInvestimento = Convert.ToDouble(ViewBag.ValorInvestidoLitecoin);
+
+    var xrpTotal = ViewBag.Ultimos7DiasAdm;
+    var xrpTotalAdm = Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(xrpTotal));
+    var admXrpTotal = ViewBag.Xrp;
+    var XrpValorRS = ViewBag.XrpValorRS;
+    var XrpInvestido = ViewBag.XrpInvestido;
+
+    var TotalAdmMes = ViewBag.ValorMesAdm;
+    var TotalAdm30 = Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(TotalAdmMes));
+    var dias30ListAdm = ViewBag.UltimoMesAdm;
+    var diasAdm30 = Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(dias30ListAdm));
+
+    var lucroOuPerdaAdm = Convert.ToDouble(ViewBag.LucroOuPerdaAdm);
+
+}
+
+@if (!User.IsInRole("Admin"))
+{
+    <div class="flex-row">
+
+        <a asp-action="Index" class="btn btn-outline-dark">Investimentos</a>
+        @if (bitcoinInvestimento > 0)
+        {
+            <a asp-action="Bitcoin" class="btn btn-outline-dark">Bitcoin</a>
+        }
+        @if (ethereumInvestimento > 0)
+        {
+            <a asp-action="Ethereum" class="btn btn-outline-dark">Ethereum</a>
+        }
+        @if (bitcoinCashInvestimento > 0)
+        {
+            <a asp-action="BitcoinCash" class="btn btn-outline-dark">Bitcoin Cash</a>
+        }
+        @if (xrpInvestimento > 0)
+        {
+            <a asp-action="Xrp" class="btn btn-outline-dark">XRP</a>
+        }
+        @if (paxGoldInvestimento > 0)
+        {
+            <a asp-action="PaxGold" class="btn btn-outline-dark">PAX Gold</a>
+        }
+        @if (litecoinInvestimento > 0)
+        {
+            <a asp-action="Litecoin" class="btn btn-outline-dark">Litecoin</a>
+        }
+    </div>
+    <br />
+    <h1 class="text-center">@ViewData["Title"]</h1>
+    <br />
+    <hr />
+
+    <h5>Quantidade: @xrpQuantidade</h5>
+    <h5>Valor Investido: R$ @xrpInvestimento</h5>
+    <h5>Valor Atual: R$ @xrpValorReal</h5>
+
+    @if (lucroOuPerda > 0)
+    {
+        <h5>Lucro: R$ @lucroOuPerda</h5>
+    }
+    else
+    {
+        if (lucroOuPerda < 0)
+        {
+            lucroOuPerda = lucroOuPerda * (-1);
+        }
+        <h5>Perda: R$ @lucroOuPerda</h5>
+    }
+
+    <div id="botaoMes">
+        <button type="button" class="btn btn-light" onclick="TrocarGrafico()">Mensal</button>
+    </div>
+    <div id="botaoSemana">
+        <button type="button" class="btn btn-light" onclick="TrocarGraficoSemana()">Semanal</button>
+    </div>
+
+    <br />
+
+    <div id="graficoSemana">
+        <canvas id="graficoXrp" width="400" height="150" aria-label="Gráfico com os valores do investimento no XRP nos últimos 7 dias" role="img">
+        </canvas>
+    </div>
+    <div id="graficoMes">
+        <canvas id="graficoXrp30" width="400" height="150" aria-label="Gráfico com os valores do investimento no XRP nos últimos 7 dias" role="img">
+        </canvas>
+    </div>
+
+    @section Scripts {
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+        <script>
+        $(document)
+            .ready(function () {
+
+                var ctx = document.getElementById('graficoXrp').getContext('2d');
+                var myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: @dias,
+                        datasets: [{
+                            data: @valores,
+                            backgroundColor: 'rgba(35, 41, 47, 0.0)',
+                            borderColor: 'rgba(35, 41, 47, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        legend: {
+                            display: false
+                        },
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: false
+                                }
+                            }]
+                        }
+                    }
+                });
+
+            });
+
+            $(document)
+            .ready(function () {
+
+                var ctx = document.getElementById('graficoXrp30').getContext('2d');
+                var myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: @dias30,
+                        datasets: [{
+                            data: @valores30,
+                            backgroundColor: 'rgba(35, 41, 47, 0.0)',
+                            borderColor: 'rgba(35, 41, 47, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        legend: {
+                            display: false
+                        },
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: false
+                                }
+                            }]
+                        }
+                    }
+                });
+
+            });
+        </script>
+    }
+}
+else
+{
+    <div class="flex-row">
+        <a asp-action="Index" class="btn btn-outline-dark">Investimentos</a>
+        <a asp-action="Bitcoin" class="btn btn-outline-dark">Bitcoin</a>
+        <a asp-action="Ethereum" class="btn btn-outline-dark">Ethereum</a>
+        <a asp-action="BitcoinCash" class="btn btn-outline-dark">Bitcoin Cash</a>
+        <a asp-action="Xrp" class="btn btn-outline-dark">XRP</a>
+        <a asp-action="PaxGold" class="btn btn-outline-dark">PAX Gold</a>
+        <a asp-action="Litecoin" class="btn btn-outline-dark">Litecoin</a>
+    </div>
+    <br />
+    <h1 class="text-center">@ViewData["Title"]</h1>
+    <br />
+    <h5>Quantidade: @admXrpTotal</h5>
+    <h5>Valor Investido: R$ @XrpInvestido</h5>
+    <h5>Valor Atual: R$ @XrpValorRS</h5>
+
+    @if (lucroOuPerdaAdm > 0)
+    {
+        <h5>Lucro: R$ @lucroOuPerdaAdm</h5>
+    }
+    else
+    {
+        if (lucroOuPerdaAdm < 0)
+        {
+            lucroOuPerdaAdm = lucroOuPerdaAdm * (-1);
+        }
+        <h5>Perda: R$ @lucroOuPerdaAdm</h5>
+    }
+
+    <div id="botaoMes">
+        <button type="button" class="btn btn-light" onclick="TrocarGrafico()">Mensal</button>
+    </div>
+    <div id="botaoSemana">
+        <button type="button" class="btn btn-light" onclick="TrocarGraficoSemana()">Semanal</button>
+    </div>
+
+    <br />
+
+    <div id="graficoSemana">
+        <canvas id="graficoXrp" width="400" height="150" aria-label="Gráfico com os valores do investimento no XRP nos últimos 7 dias" role="img">
+        </canvas>
+    </div>
+    <div id="graficoMes">
+        <canvas id="graficoXrp30" width="400" height="150" aria-label="Gráfico com os valores do investimento no XRP nos últimos 7 dias" role="img">
+        </canvas>
+    </div>
+
+
+    @section Scripts {
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+        <script>
+        $(document)
+            .ready(function () {
+
+                var ctx = document.getElementById('graficoXrp').getContext('2d');
+                var myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: @dias,
+                        datasets: [{
+                            data: @xrpTotalAdm,
+                            backgroundColor: 'rgba(35, 41, 47, 0.0)',
+                            borderColor: 'rgba(35, 41, 47, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        legend: {
+                            display: false
+                        },
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: false
+                                }
+                            }]
+                        }
+                    }
+                });
+
+            });
+
+                   $(document)
+            .ready(function () {
+
+                var ctx = document.getElementById('graficoXrp30').getContext('2d');
+                var myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: @diasAdm30,
+                        datasets: [{
+                            data: @TotalAdm30,
+                            backgroundColor: 'rgba(35, 41, 47, 0.0)',
+                            borderColor: 'rgba(35, 41, 47, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        legend: {
+                            display: false
+                        },
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: false
+                                }
+                            }]
+                        }
+                    }
+                });
+
+            });
+        </script>
+
+    }
+}

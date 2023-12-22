@@ -1,0 +1,71 @@
+﻿
+@{
+    ViewData["Title"] = "PAX Gold";
+    var diasList = ViewBag.Dias;
+    var valoresList = ViewBag.Valores;
+    var dias = Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(diasList));
+    var valores = Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(valoresList));
+}
+
+<br />
+
+<div class="flex-row">
+    <a asp-action="Index" class="btn btn-outline-dark menu">Hoje</a>
+    <a asp-action="Semanal" class="btn btn-outline-dark menu">Últimos 7 dias</a>
+    <a asp-action="Mensal" class="btn btn-outline-dark menu">Todas as Criptomoedas</a>
+    <a asp-action="Bitcoin30" class="btn btn-outline-dark menu">Bitcoin</a>
+    <a asp-action="Ethereum30" class="btn btn-outline-dark menu">Ethereum</a>
+    <a asp-action="BitcoinCash30" class="btn btn-outline-dark menu">Bitcoin Cash</a>
+    <a asp-action="Xrp30" class="btn btn-outline-dark menu">XRP</a>
+    <a asp-action="PaxGold30" class="btn btn-dark text-white">PAX Gold</a>
+    <a asp-action="Litecoin30" class="btn btn-outline-dark menu">Litecoin</a>
+</div>
+
+<br />
+
+<h1>@ViewData["Title"]</h1>
+<br />
+<h4 class="text-center">Últimos 30 Dias</h4>
+<canvas id="graficoBPaxGold" width="400" height="150"  aria-label="Gráfico com os valores do PAX Gold nos últimos 30 dias" role="img">
+</canvas>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+    <script>
+        $(document)
+            .ready(function () {
+
+                var ctx = document.getElementById('graficoBPaxGold').getContext('2d');
+                var myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: @dias,
+                        datasets: [{
+                            data: @valores,
+                            backgroundColor: 'rgba(250, 244, 15,  0.0)',
+                            borderColor: 'rgba(250, 244, 15, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        legend: {
+                            display: false
+                        },
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: false
+                                }
+                            }]
+                        }
+                    }
+                });
+
+            });
+    </script>
+
+}
+
+
+

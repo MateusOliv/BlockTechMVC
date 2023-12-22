@@ -1,0 +1,118 @@
+﻿@model IEnumerable<BlockTechMVC.Models.Saldo>
+
+@{
+    ViewData["Title"] = "Conta";
+    var total = ViewBag.Total;
+
+    int i = 0;
+
+    double[] totalGeral = new double[20];
+
+    if (User.IsInRole("Admin")) {
+        foreach (var item in ViewBag.TotalAdm)
+        {
+            totalGeral[i] = item;
+            i++;
+        }
+        i = 0;
+    }
+}
+
+@if (!User.IsInRole("Admin"))
+{
+    <h1>@ViewData["Title"]</h1>
+    <br />
+}
+@if (User.IsInRole("Admin"))
+{
+    <br />
+    <h1>Contas</h1>
+    <br />
+    <form asp-controller="ContasClientes" asp-action="Index" method="get">
+        <p>
+            Nome/Razão Social: <input type="text" name="SearchString">
+            <input type="submit" value="Filtrar" />
+        </p>
+    </form>
+}
+
+<div class="table-responsive">
+    <table class="table table-hover">
+        @if (User.IsInRole("Admin"))
+        {
+            <caption>Informações das Contas</caption>
+        }
+        else
+        {
+            <caption>Informações da Conta</caption>
+        }
+
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.ContaCliente.DataAbertura)
+                </th>
+                @if (User.IsInRole("Admin"))
+                {
+                    <th>
+                        @Html.ActionLink("Nome", "Index", new { sortOrder = ViewBag.NameSortParm }, new { @class = "imgOrder" })
+                    </th>
+                }
+                <th>
+                    @Html.DisplayNameFor(model => model.ContaCliente.NumeroConta)
+                </th>
+                @if (User.IsInRole("Admin"))
+                {
+            <th>
+                @Html.DisplayNameFor(model => model.SaldoAtualRS)
+            </th>
+                }
+                else
+                {
+                    <th>
+                        @Html.DisplayNameFor(model => model.SaldoAtualRS)
+                    </th>
+                }
+
+                <th></th>
+                <th style="white-space: nowrap"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ContaCliente.DataAbertura)
+                    </td>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ContaCliente.ApplicationUser.Nome)
+                        </td>
+                    }
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ContaCliente.NumeroConta)
+                    </td>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <td>
+                            @totalGeral[i]
+                            @{ i++; }
+                        </td>
+                    }
+                    else
+                    {
+                        <td>
+                            R$ @total
+                        </td>
+                    }
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-dark">Detalhes</a>
+                    </td>
+                </tr>
+
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,69 @@
+﻿@model IEnumerable<BlockTechMVC.Models.Criptomoeda>
+
+@{
+    ViewData["Title"] = "Criptomoedas";
+}
+<br />
+<h1>@ViewData["Title"]</h1>
+<br />
+@if (User.IsInRole("Admin"))
+{
+    <p>
+    <a asp-action="Create" class="btn btn-light">Adicionar</a>
+</p>
+}
+
+<form asp-controller="Criptomoedas" asp-action="Index" method="get">
+    <p>
+        Nome: <input type="text" name="SearchString">
+        <input type="submit" value="Filtrar" />
+    </p>
+</form>
+
+<div class="table-responsive">
+    <table class="table table-hover">
+        <caption>Lista de Criptomoedas</caption> @*acessibilidade*@
+        <thead> 
+            <tr>
+                <th>
+                    @Html.ActionLink("Nome", "Index", new { sortOrder = ViewBag.NameSortParm }, new { @class = "imgOrder" })
+                </th>
+                <th></th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Simbolo)
+                </th>
+                <th></th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Cadastro)
+                </th>
+                <th></th>
+                <th style="white-space: nowrap"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nome)
+                    </td>
+                    <td></td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Simbolo)
+                    </td>
+                    <td></td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Cadastro)
+                    </td>
+                    <td></td>
+                    <td style="white-space: nowrap">
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-dark">Editar</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
